@@ -28,20 +28,20 @@ class ScrappingMLController {
     );
 
     const price = await page.$$eval(
-      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-fraction",
+      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-amount",
       (tds) =>
         tds.map((td) => {
           return td.innerText;
         })
     );
 
-    const cents = await page.$$eval(
-      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-cents",
-      (tds) =>
-        tds.map((td) => {
-          return td.innerText;
-        })
-    );
+    // const cents = await page.$$eval(
+    //   "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-cents",
+    //   (tds) =>
+    //     tds.map((td) => {
+    //       return tds[0].innerText;
+    //     })
+    // );
 
     const image = await page.$$eval(
       "ol li div .slick-slide.slick-active .ui-search-result-image__element ",
@@ -58,7 +58,7 @@ class ScrappingMLController {
     ) {
       const obj = <any>{};
       obj.title = title[i];
-      obj.price = `${price[i]},${cents[i]}`;
+      obj.price = `${price[i]}`;
       obj.image = image[i];
       i + 2;
       api.push(obj);
