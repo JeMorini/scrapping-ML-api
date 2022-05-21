@@ -15,6 +15,8 @@ class ScrappingMLController {
       height: 12000,
     });
 
+    await page.screenshot({ path: "example.png" });
+
     let api = [];
 
     const title = await page.$$eval(
@@ -26,7 +28,15 @@ class ScrappingMLController {
     );
 
     const price = await page.$$eval(
-      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium span .price-tag-fraction",
+      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-fraction",
+      (tds) =>
+        tds.map((td) => {
+          return td.innerText;
+        })
+    );
+
+    const cents = await page.$$eval(
+      "ol li div .ui-search-item__group__element .ui-search-price.ui-search-price--size-medium .ui-search-price__second-line span .price-tag-cents",
       (tds) =>
         tds.map((td) => {
           return td.innerText;
@@ -42,13 +52,13 @@ class ScrappingMLController {
     );
 
     for (
-      let i = 1;
+      let i = 0;
       i < title.length;
       i = !!title[i] ? i + 1 : (i = title.length)
     ) {
       const obj = <any>{};
       obj.title = title[i];
-      obj.price = price[i];
+      obj.price = `${price[i]},${cents[i]}`;
       obj.image = image[i];
       i + 2;
       api.push(obj);
